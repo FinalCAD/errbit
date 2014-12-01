@@ -103,10 +103,10 @@ apt-get update
 apt-get install mongodb-10gen
 ```
 
-  * Install libxml and libcurl
+  * Install libxml, libzip, libssl and libcurl
 
 ```bash
-apt-get install libxml2 libxml2-dev libxslt-dev libcurl4-openssl-dev
+apt-get install libxml2 libxml2-dev libxslt-dev libcurl4-openssl-dev libzip-dev libssl-dev
 ```
 
   * Install Bundler
@@ -238,8 +238,8 @@ Authentication
 If you hosted Errbit at errbit.example.com, you would fill in:
 
 <table>
-  <tr><th>URL:</th><td>http://errbit.example.com/</td></tr>
-  <tr><th>Callback URL:</th><td>http://errbit.example.com/users/auth/github</td></tr>
+  <tr><th>URL:</th><td><a href="http://errbit.example.com/">http://errbit.example.com/</a></td></tr>
+  <tr><th>Callback URL:</th><td><a href="http://errbit.example.com/users/auth/github">http://errbit.example.com/users/auth/github</a></td></tr>
 </table>
 
   * After you have registered your app, set `github_client_id` and `github_secret`
@@ -389,22 +389,11 @@ it will be displayed under the *User Details* tab:
 Javascript error notifications
 --------------------------------------
 
-You can log javascript errors that occur in your application by following the directions below.
-
-# Rails Applications
-
-Add the following line to the `<head>` section of your application template.
+You can log javascript errors that occur in your application by including the
+following script tag before any javascript is loaded in your application.
 
 ```
-<%= airbrake_javascript_notifier %>
-```
-
-# Other Platforms
-
-include the following before any javascript is loaded in your application.
-
-```
-<script src='http://YOUR-ERRBIT-HOST/javascripts/notifier.js' type='text/javascript'></script>
+<script src="//YOUR-ERRBIT-HOST/javascripts/notifier.js" type="text/javascript"></script>
 ```
 
 
@@ -532,15 +521,15 @@ Solutions known to work are listed below:
 <table>
   <tr>
     <th>PHP (&gt;= 5.3)</th>
-    <td>https://github.com/flippa/errbit-php</td>
+    <td>[flippa/errbit-php](https://github.com/flippa/errbit-php)</td>
   </tr>
   <tr>
     <th>OOP PHP (&gt;= 5.3)</th>
-    <td>https://github.com/emgiezet/errbitPHP</td>
+    <td>[emgiezet/errbitPHP](https://github.com/emgiezet/errbitPHP)</td>
   </tr>
   <tr>
     <th>Python</th>
-    <td>https://github.com/mkorenkov/errbit.py , https://github.com/pulseenergy/airbrakepy</td>
+    <td>[mkorenkov/errbit.py](https://github.com/mkorenkov/errbit.py) , [pulseenergy/airbrakepy](https://github.com/pulseenergy/airbrakepy)</td>
   </tr>
 </table>
 
