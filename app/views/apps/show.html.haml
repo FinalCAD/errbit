@@ -21,6 +21,16 @@
 
   - if current_user.watching?(app)
     = link_to t('.unwatch'), app_watcher_path({app_id: app, id: current_user.id}), method: :delete, class: 'button', data: {confirm: t('.are_you_sure')}
+- if app.problems.any?
+  %section
+    = render 'problems/search', :all_errs => @all_errs, :app_id => app.id
+  %br
+  %section
+    .problem_table{:id => 'problem_table'}
+      = render 'problems/table', :problems => problems
+- else
+  %h3.clear=t('.no_error_yet')
+  = render 'configuration_instructions', :app => app
 %h3#watchers_toggle
   =t('.watchers')
   %span.click_span=t('.show_hide')
@@ -85,14 +95,3 @@
   - else
     %h3=t('.no_deploys')
 
-- if app.problems.any?
-  %h3.clear=t('.errors')
-  %section
-    = render 'problems/search', :all_errs => @all_errs, :app_id => app.id
-  %br
-  %section
-    .problem_table{:id => 'problem_table'}
-      = render 'problems/table', :problems => problems
-- else
-  %h3.clear=t('.no_error_yet')
-  = render 'configuration_instructions', :app => app
