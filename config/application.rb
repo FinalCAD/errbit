@@ -1,20 +1,13 @@
 require File.expand_path('../boot', __FILE__)
 
-# Pick the frameworks you want:
-# require 'rails/all'
-# require "active_record/railtie"
 require "action_controller/railtie"
 require "action_mailer/railtie"
-# require "active_resource/railtie"
 require 'mongoid/railtie'
 require "sprockets/railtie"
 
-if defined?(Bundler)
-  # If you precompile assets before deploying to production, use this line
-  Bundler.require(*Rails.groups(:assets => %w(development test)))
-  # If you want your assets lazily compiled in production, use this line
-  # Bundler.require(:default, :assets, Rails.env)
-end
+require 'draper'
+
+Bundler.require(*Rails.groups)
 
 module Errbit
   class Application < Rails::Application
@@ -45,9 +38,6 @@ module Errbit
       g.fixture_replacement :fabrication
     end
 
-    # Enable the mongoid identity map for performance
-    Mongoid.identity_map_enabled = true
-
     # IssueTracker subclasses use inheritance, so preloading models provides querying consistency in dev mode.
     config.mongoid.preload_models = true
 
@@ -71,4 +61,3 @@ module Errbit
     config.assets.version = '1.0'
   end
 end
-

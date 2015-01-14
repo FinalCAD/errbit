@@ -82,10 +82,8 @@ Password: password
 
 The list of requirements to install Errbit are :
 
- * Ruby 1.9.3 or higher
+ * Ruby 2.1.0 or higher
  * MongoDB 2.2.0 or higher
-
-Errbit uses Ruby 2.0.0 as a default. However, it is compatible with Ruby 1.9.3 and above.
 
 Installation
 ------------
@@ -103,10 +101,10 @@ apt-get update
 apt-get install mongodb-10gen
 ```
 
-  * Install libxml and libcurl
+  * Install libxml, libzip, libssl and libcurl
 
 ```bash
-apt-get install libxml2 libxml2-dev libxslt-dev libcurl4-openssl-dev
+apt-get install libxml2 libxml2-dev libxslt-dev libcurl4-openssl-dev libzip-dev libssl-dev
 ```
 
   * Install Bundler
@@ -137,95 +135,9 @@ rake errbit:bootstrap
 script/rails server
 ```
 
-Deploying:
+Deployment:
 ----------
-
-  * Copy `config/deploy.example.rb` to `config/deploy.rb`
-  * Update the `deploy.rb` or `config.yml` file with information about your server
-  * Setup server and deploy
-
-```bash
-cap deploy:setup deploy db:create_mongoid_indexes
-```
-
-(Note: The capistrano deploy script will automatically generate a unique secret token.)
-
-**Deploying to Heroku:**
-
-  * Clone the repository
-
-```bash
-git clone http://github.com/errbit/errbit.git
-```
-  * Update `db/seeds.rb` with admin credentials for your initial login.
-
-  * Run `bundle`
-
-  * Create & configure for Heroku
-
-```bash
-gem install heroku
-heroku create example-errbit
-# If you really want, you can define your stack and your buildpack. the default is good to us :
-# heroku create example-errbit --stack cedar --buildpack https://github.com/heroku/heroku-buildpack-ruby.git
-heroku addons:add mongolab:sandbox
-heroku addons:add sendgrid:starter
-heroku config:add HEROKU=true
-heroku config:add SECRET_TOKEN="$(bundle exec rake secret)"
-heroku config:add ERRBIT_HOST=some-hostname.example.com
-heroku config:add ERRBIT_EMAIL_FROM=example@example.com
-git push heroku master
-```
-
-  * Seed the DB (_NOTE_: No bootstrap task is used on Heroku!) and
-    create index
-
-```bash
-heroku run rake db:seed
-heroku run rake db:mongoid:create_indexes
-```
-
-  * If you are using a free database on Heroku, you may want to periodically clear resolved errors to free up space.
-
-    * With the heroku-scheduler add-on (replacement for cron):
-
-    ```bash
-    # Install the heroku scheduler add-on
-    heroku addons:add scheduler:standard
-
-    # Go open the dashboard to schedule the job.  You should use
-    # 'rake errbit:db:clear_resolved' as the task command, and schedule it
-    # at whatever frequency you like (once/day should work great).
-    heroku addons:open scheduler
-    ```
-
-    * With the cron add-on:
-
-    ```bash
-    # Install the heroku cron addon, to clear resolved errors daily:
-    heroku addons:add cron:daily
-    ```
-
-    * Or clear resolved errors manually:
-
-    ```bash
-    heroku run rake errbit:db:clear_resolved
-    ```
-
-  * You may want to enable the deployment hook for heroku :
-
-```bash
-heroku addons:add deployhooks:http --url="http://YOUR_ERRBIT_HOST/deploys.txt?api_key=YOUR_API_KEY"
-```
-
-  * You may also want to configure a different secret token for each deploy:
-
-```bash
-heroku config:add SECRET_TOKEN=some-secret-token
-```
-
-  * Enjoy!
-
+See [notes on deployment](docs/deployment.md)
 
 Authentication
 --------------
@@ -238,8 +150,8 @@ Authentication
 If you hosted Errbit at errbit.example.com, you would fill in:
 
 <table>
-  <tr><th>URL:</th><td>http://errbit.example.com/</td></tr>
-  <tr><th>Callback URL:</th><td>http://errbit.example.com/users/auth/github</td></tr>
+  <tr><th>URL:</th><td><a href="http://errbit.example.com/">http://errbit.example.com/</a></td></tr>
+  <tr><th>Callback URL:</th><td><a href="http://errbit.example.com/users/auth/github">http://errbit.example.com/users/auth/github</a></td></tr>
 </table>
 
   * After you have registered your app, set `github_client_id` and `github_secret`
@@ -389,22 +301,11 @@ it will be displayed under the *User Details* tab:
 Javascript error notifications
 --------------------------------------
 
-You can log javascript errors that occur in your application by following the directions below.
-
-# Rails Applications
-
-Add the following line to the `<head>` section of your application template.
+You can log javascript errors that occur in your application by including the
+following script tag before any javascript is loaded in your application.
 
 ```
-<%= airbrake_javascript_notifier %>
-```
-
-# Other Platforms
-
-include the following before any javascript is loaded in your application.
-
-```
-<script src='http://YOUR-ERRBIT-HOST/javascripts/notifier.js' type='text/javascript'></script>
+<script src="//YOUR-ERRBIT-HOST/javascripts/notifier.js" type="text/javascript"></script>
 ```
 
 
@@ -412,11 +313,11 @@ Using custom fingerprinting methods
 -----------------------------------
 
 Errbit allows you to use your own Fingerprinting Strategy.
-If you are upgrading from a very old version of errbit, you can use the `LegacyFingerprint` for compatibility. The fingerprint strategy can be changed by adding an initializer to errbit:
+If you are upgrading from a very old version of errbit, you can use the `Fingerprint::MD5` for compatibility. The fingerprint strategy can be changed by adding an initializer to errbit:
 
 ```ruby
 # config/fingerprint.rb
-ErrorReport.fingerprint_strategy = LegacyFingerprint
+ErrorReport.fingerprint_strategy = Fingerprint::MD5
 ```
 
 The easiest way to add custom fingerprint methods is to simply subclass `Fingerprint`
@@ -532,15 +433,15 @@ Solutions known to work are listed below:
 <table>
   <tr>
     <th>PHP (&gt;= 5.3)</th>
-    <td>https://github.com/flippa/errbit-php</td>
+    <td>[flippa/errbit-php](https://github.com/flippa/errbit-php)</td>
   </tr>
   <tr>
     <th>OOP PHP (&gt;= 5.3)</th>
-    <td>https://github.com/emgiezet/errbitPHP</td>
+    <td>[emgiezet/errbitPHP](https://github.com/emgiezet/errbitPHP)</td>
   </tr>
   <tr>
     <th>Python</th>
-    <td>https://github.com/mkorenkov/errbit.py , https://github.com/pulseenergy/airbrakepy</td>
+    <td>[mkorenkov/errbit.py](https://github.com/mkorenkov/errbit.py) , [pulseenergy/airbrakepy](https://github.com/pulseenergy/airbrakepy)</td>
   </tr>
 </table>
 
