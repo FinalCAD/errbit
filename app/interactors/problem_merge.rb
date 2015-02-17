@@ -5,7 +5,7 @@ class ProblemMerge
     problems = problems.flatten.uniq
     @merged_problem = problems[0]
     @child_problems = problems[1..-1]
-    raise ArgumentError.new("need almost 2 uniq different problems") if @child_problems.empty?
+    raise ArgumentError.new("need almost 2 uniq different problems") if problems.empty? or problems.size < 2
   end
   attr_reader :merged_problem, :child_problems
 

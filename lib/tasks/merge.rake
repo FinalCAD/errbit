@@ -1,6 +1,7 @@
 namespace :merge do
 
   desc <<-DESC
+    Merge uniq problem based on message
     bundle exec rake merge:problem['message']
     heroku run rake "merge:problem['message']" --trace -a finalcloud-errbit
   DESC
@@ -27,6 +28,7 @@ namespace :merge do
   end
 
   desc <<-DESC
+    Merge all problems based on RULES { problems: [] }.to_json
     bundle exec rake merge:problems
     heroku run rake "merge:problems" --trace -a finalcloud-errbit
   DESC
@@ -42,4 +44,25 @@ namespace :merge do
       end
     end
   end
+
+  namespace :reference do
+    desc <<-DESC
+      Sometime the message content special caracter, double space, break line, you need to know the real content.
+      bundle exec rake merge:reference:problem['id']
+      heroku run rake "merge:reference:problem['id']" --trace -a finalcloud-errbit
+    DESC
+    task :problem, :id do |t, args|
+      unless args.id
+        puts 'You must provided an id'
+        exit 1
+      end
+      Rake::Task[:environment].invoke
+      begin
+        p("Title : '#{Problem.find(args.id).message}'")
+      rescue Mongoid::Errors::DocumentNotFound
+        puts "There aren't record for this id"
+      end
+    end
+  end
+
 end
