@@ -278,6 +278,7 @@ GEM
     rake (10.4.2)
     rdoc (4.1.2)
       json (~> 1.4)
+    redis (3.2.1)
     request_store (1.1.0)
     responders (1.1.2)
       railties (>= 3.2, < 4.2)
@@ -426,6 +427,7 @@ DEPENDENCIES
   rails_12factor
   rails_autolink
   railties (~> 4.1.8)
+  redis
   ri_cal
   rspec
   rspec-activemodel-mocks

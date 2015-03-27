@@ -34,6 +34,7 @@ namespace :sync do
       "-d #{ENV['MONGOLAB_URI']} -u #{ENV['MONGOHQ_USERNAME']} " \
       "-p #{ENV['MONGOHQ_PASSWORD']} " \
       "-o tmp/#{file_name}"
+    puts "#{cmd}"
     system cmd
   end
 

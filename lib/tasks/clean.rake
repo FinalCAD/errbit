@@ -1,7 +1,7 @@
 desc <<-DESC
   Resolves problems that didnt occur for x weeks
   bundle exec rake cleanup['1']
-  heroku run rake "cleanup['1'] --trace -a finalcloud-errbit
+  heroku run rake "cleanup['1']" --trace -a finalcloud-errbit
 DESC
 task :cleanup, :weeks do |t, args|
   args.each { |k, v| puts "#{k} => #{v}" }
